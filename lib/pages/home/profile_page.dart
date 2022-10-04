@@ -131,6 +131,7 @@ class ProfilePage extends StatelessWidget {
         ),
       );
     }
+    
     return Column(
       children: [
         header(),
