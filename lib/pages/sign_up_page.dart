@@ -293,7 +293,7 @@ class SignupPage extends StatelessWidget {
 
     return Scaffold(
         backgroundColor: backgroundColor1,
-        resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: false, 
         body: SafeArea(
           child: Container(
             margin: EdgeInsets.symmetric(
