@@ -32,6 +32,7 @@ class AuthProvider with ChangeNotifier{
         return true;
       } catch (e) {
         print(e);
+
         return false;
       }
     }

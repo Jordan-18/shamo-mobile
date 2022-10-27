@@ -1,11 +1,63 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shamo/providers/auth_provider.dart';
 import 'package:shamo/theme.dart';
+import 'package:shamo/widget/loading_button.dart';
 
-class SignupPage extends StatelessWidget {
-  const SignupPage({Key? key}) : super(key: key);
+class SignupPage extends StatefulWidget {
+
+  @override
+  State<SignupPage> createState() => _SignupPageState();
+}
+
+class _SignupPageState extends State<SignupPage> {
+  TextEditingController nameController = TextEditingController(text: '');
+
+  TextEditingController usernameController = TextEditingController(text: '');
+
+  TextEditingController emailController = TextEditingController(text: '');
+
+  TextEditingController passwordController = TextEditingController(text: '');
+
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
+
+    AuthProvider authProvider = Provider.of<AuthProvider>(context);
+
+    handleSignUp() async{
+
+      setState(() {
+        isLoading = true; 
+      });
+
+      if(await authProvider.register(
+        name: nameController.text,
+        username: usernameController.text,
+        email: emailController.text,
+        password: passwordController.text,
+      )){
+        Navigator.pushNamed(context, '/home');
+      }else{
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              backgroundColor: alertColor,
+              content: 
+            Text(
+              'Gagal Register',
+              textAlign: TextAlign.center,
+            )
+          )
+        );
+      }
+
+      setState(() {
+        isLoading = false;
+      });
+
+    }
+
     Widget header() {
       return Container(
         margin: EdgeInsets.only(top: 30),
@@ -68,6 +120,7 @@ class SignupPage extends StatelessWidget {
                     Expanded(
                       child: TextFormField(
                         style: primaryTextStyle,
+                        controller: nameController,
                         decoration: InputDecoration.collapsed(
                           hintText: 'Your Full Name',
                           hintStyle: subtitleTextStyle,
@@ -120,6 +173,7 @@ class SignupPage extends StatelessWidget {
                     Expanded(
                       child: TextFormField(
                         style: primaryTextStyle,
+                        controller: usernameController,
                         decoration: InputDecoration.collapsed(
                           hintText: 'Your Username',
                           hintStyle: subtitleTextStyle,
@@ -172,6 +226,7 @@ class SignupPage extends StatelessWidget {
                     Expanded(
                       child: TextFormField(
                         style: primaryTextStyle,
+                        controller: emailController,
                         decoration: InputDecoration.collapsed(
                           hintText: 'Your Email Address',
                           hintStyle: subtitleTextStyle,
@@ -225,6 +280,7 @@ class SignupPage extends StatelessWidget {
                       child: TextFormField(
                         style: primaryTextStyle,
                         obscureText: true,
+                        controller: passwordController,
                         decoration: InputDecoration.collapsed(
                           hintText: 'Your Password',
                           hintStyle: subtitleTextStyle,
@@ -246,9 +302,7 @@ class SignupPage extends StatelessWidget {
         width: double.infinity,
         margin: EdgeInsets.only(top: 30),
         child: TextButton(
-          onPressed: () {
-            Navigator.pushNamed(context, '/home');
-          },
+          onPressed: handleSignUp,
           style: TextButton.styleFrom(
               backgroundColor: primaryColor,
               shape: RoundedRectangleBorder(
@@ -307,7 +361,7 @@ class SignupPage extends StatelessWidget {
                 usernameInput(),
                 emailInput(),
                 passwordInput(),
-                SignUpButton(),
+                isLoading ? LoadingButton() : SignUpButton(),
                 Spacer(),
                 footer()
               ],
